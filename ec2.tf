@@ -14,8 +14,8 @@ resource "aws_key_pair" "keypair"  {
                tls_private_key.mytaskkey
        ]
 }
-resource "aws_security_group" "mytask_sec_group" {
-        name           =  "mytask_sec_group"
+resource "aws_security_group" "mytask_sec_group1" {
+        name           =  "mytask_sec_group1"
         description  =  "Allow SSH and HTTP"
         vpc_id  =  "vpc-04db8e67c7e69da1e"
 
@@ -41,14 +41,14 @@ resource "aws_security_group" "mytask_sec_group" {
              cidr_blocks  =  [ "0.0.0.0/0" ]
         }
        tags  =  {
-           Name  =  "mytask_sec_group"
+           Name  =  "mytask_sec_group1"
         }
 }
 resource "aws_instance"  "myinstan"  {
     ami   =  "ami-0447a12f28fddb066"
     instance_type  =  "t2.micro"
     key_name  =  aws_key_pair.keypair.key_name
-    security_groups  =  [ "mytask_sec_group" ]
+    security_groups  =  [ "mytask_sec_group1" ]
    provisioner  "remote-exec" {
               connection  {
                   agent   =  "false"
@@ -85,7 +85,7 @@ resource "aws_ebs_volume" "myebs" {
         }
 }
 resource "aws_volume_attachment"  "ebs_attachment1"  {
-         device_name  =  "/dvd/sdd"
+         device_name  =  "/dev/sdd"
          volume_id  =  aws_ebs_volume.myebs.id
          instance_id  =  aws_instance.myinstan.id
          force_detach  =  true 
@@ -172,6 +172,6 @@ viewer_certificate  {
            }
 
    provisioner  "local-exec"  {
-           command  =  "google-chrome ${aws_instance.myinstan.public_ip}"
+           command  =  "chrome ${aws_instance.myinstan.public_ip}"
    }
 }
